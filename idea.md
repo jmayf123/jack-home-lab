@@ -59,11 +59,52 @@ This is the trickiest part but well-trodden ground for the 5800X + Radeon combo.
 7. **Install Windows + VirtIO drivers** — Use the VirtIO driver ISO for disk/network performance inside the VM.
 8. **Test** — Boot the VM, confirm the GPU drives an actual monitor plugged into it, install Radeon drivers inside Windows, benchmark a game to confirm you're getting close to bare-metal performance (expect single-digit % overhead, not a big hit).
 
-**Day-to-day workflow:** shut down the Windows VM when you're not gaming — the GPU sits idle/available, and your other VMs/containers keep running uninterrupted the whole time. No live-switching hassle needed unless you want it.
+**Day-to-day workflow:** shut down the Windows VM when you're not gaming — the GPU sits idle/available, and your other VMs/containers keep running uninterrupted the whole time. No live-switching hassle needed unless you want it. See Part 4 for local-monitor and laptop-streaming setup.
 
 ---
 
-## Part 4: Service Stack (VMs + Containers)
+## Part 4: Gaming Setup (Local Monitor + Streaming to Laptop)
+
+Both goals work at the same time. The Windows VM owns the GPU, so it can drive the physical monitor and stream to your laptop simultaneously.
+
+### 4.1 Playing on the monitor attached to the GPU
+
+Once the GPU is passed through, the monitor plugged into the 6700 XT behaves like a normal Windows PC. The catch is **keyboard, mouse, and audio**, which are attached to the host, not the VM:
+
+- **Option 1: Pass individual USB devices.** In Proxmox: VM → Hardware → Add → USB Device. Simple, but those devices are dedicated to the VM while it runs.
+- **Option 2: Pass through a whole USB controller** (a PCIe USB card, or a motherboard controller in its own IOMMU group). Cleaner long-term: anything plugged into those ports (controllers, headsets, VR gear) just works and hot-plugs normally. **Recommended.**
+- **Audio:** use the monitor's HDMI/DisplayPort audio through the GPU, or a USB headset on the passed-through ports.
+
+### 4.2 Streaming to your laptop (Sunshine + Moonlight)
+
+1. Install **Sunshine** (server) inside the Windows VM and pair it with the **Moonlight** client on your laptop. Moonlight has a macOS client, so the MacBook works.
+2. In Sunshine, use the **AMD AMF** encoder (H.264 or HEVC). The RX 6700 XT has no AV1 encoding.
+3. Use wired Ethernet on the server and decent Wi-Fi 5/6 on the laptop. That's plenty for 1080p/1440p at 60+ fps.
+4. For streaming from outside your home, install **Tailscale** on the VM and the laptop. No port forwarding needed, and Moonlight works over it.
+5. If you want to stream with the local monitor off or unplugged, add an inexpensive **HDMI dummy plug** so Windows keeps a display active for Sunshine to capture.
+
+Notes: you can play locally while streaming is available, but two people can't play the same session at once. Each additional player needs their own session.
+
+### 4.3 Always-on vs on-demand
+
+Streaming only works while the Windows VM is running, and while it runs it holds the GPU.
+
+| Mode | How | Tradeoff |
+|---|---|---|
+| **On-demand (start here)** | Start the VM from the Proxmox web UI or app before you game | GPU is free for other services when Windows is off |
+| **Start at boot** | Enable "Start at boot" in the VM's Options | Always ready to stream, but the GPU is permanently claimed and Jellyfin/Ollama fall back to CPU |
+
+If you stream a lot, a small script or web button that starts the VM (and optionally waits for Sunshine to come up) is an easy add-on.
+
+### 4.4 Caveats
+
+- **Anti-cheat:** some competitive games (Valorant's Vanguard, some EA/Battlefield titles, others) block or ban VMs. Check the games you care most about first. Single-player and most Steam games are fine.
+- **AMD reset behavior:** RDNA2 cards are generally well behaved, but some AMD cards fail to reset cleanly when the VM shuts down, which can require a host reboot. If it happens, community workarounds exist.
+- **No bare-metal Windows anymore:** to play, even locally, the VM must be running. Expect the monitor to light up about a minute after starting it.
+
+---
+
+## Part 5: Service Stack (VMs + Containers)
 
 Recommended mix of Proxmox LXC containers (lightweight, share host kernel) and full VMs (isolated OS) for each service:
 
@@ -89,7 +130,7 @@ Since the GPU is time-shared with gaming, plan for Ollama/Jellyfin/Frigate to ru
 
 ---
 
-## Part 5: Future Builds & Expansion Ideas
+## Part 6: Future Builds & Expansion Ideas
 
 Once the base platform is stable, natural next projects on this same box:
 
