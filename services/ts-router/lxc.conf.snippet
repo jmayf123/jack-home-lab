@@ -1,0 +1,10 @@
+# Add these lines to the container's config on the PROXMOX HOST (not inside
+# the container itself): /etc/pve/lxc/<vmid>.conf
+#
+# Required for an unprivileged LXC to create TUN/TAP interfaces, which
+# Tailscale needs to establish its WireGuard-based tunnels.
+#
+# Restart the container after adding these lines.
+
+lxc.cgroup2.devices.allow: c 10:200 rwm
+lxc.mount.entry: /dev/net dev/net none bind,create=dir
