@@ -1,0 +1,41 @@
+# Redacted template of AdGuardHome.yaml
+#
+# The real file lives inside the container at /opt/AdGuardHome/AdGuardHome.yaml
+# and contains your admin password hash — never commit the real file to git.
+#
+# Copy the real file locally, strip/replace the fields marked below, and commit
+# this redacted version instead if you want the structure tracked in the repo.
+
+http:
+  address: 0.0.0.0:3000
+
+users:
+  - name: admin
+    password: "<REDACTED - bcrypt hash, do not commit real value>"
+
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  upstream_dns:
+    - https://dns.quad9.net/dns-query
+    - https://cloudflare-dns.com/dns-query
+  bootstrap_dns:
+    - 9.9.9.9
+    - 1.1.1.1
+  cache_size: 4194304
+  cache_optimistic: true
+  parallel_requests: true
+
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
+    name: AdGuard DNS filter
+  # Add additional blocklist entries here as they're added in the UI
+  # (OISD, Steven Black hosts, etc.) — keep this list in sync manually
+  # since the UI doesn't export a diff.
+
+# DHCP left disabled — router still handles DHCP, AdGuard set as the
+# router's primary DNS server. Revisit if per-client stats become useful.
+dhcp:
+  enabled: false
