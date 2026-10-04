@@ -25,9 +25,10 @@ resource "proxmox_lxc" "ts-router" {
   unprivileged = true
   password     = var.ts_router_lxc_root_password
 
-  cores  = 1
-  memory = 512
-  swap   = 512
+  cores     = 1
+  cpulimit = 0
+  memory    = 512
+  swap      = 512
 
   rootfs {
     storage = "local"   
@@ -45,7 +46,24 @@ resource "proxmox_lxc" "ts-router" {
   features {
     nesting = true
     mount   = ""
-  } 
+  }
+
+  lifecycle {
+    ignore_changes = [
+      description,
+      onboot,
+      password,
+      tags,
+      ostemplate,
+      features,
+      rootfs,
+      network,
+      cpulimit,
+      cmode,
+      start,
+      target_node,
+    ]
+  }
 }
 
 # adguard - AdGaurd Network adblocker
@@ -57,9 +75,10 @@ resource "proxmox_lxc" "adguard" {
   unprivileged = true
   password     = var.adguard_lxc_root_password
 
-  cores  = 1
-  memory = 512
-  swap   = 512
+  cores     = 1
+  cpulimit = 0
+  memory    = 512
+  swap      = 512
 
   rootfs {
     storage = "local"
@@ -75,6 +94,23 @@ resource "proxmox_lxc" "adguard" {
 
   features {
     keyctl = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      description,
+      onboot,
+      password,
+      tags,
+      ostemplate,
+      features,
+      rootfs,
+      network,
+      cpulimit,
+      cmode,
+      start,
+      target_node,
+    ]
   }
 }
 # vault - Vaultwarden password manager
