@@ -12,7 +12,7 @@ Proxmox VE homelab running on a repurposed gaming PC.
 |---|---|---|
 | Tailscale subnet router | ✅ Done | Dedicated LXC, see `services/ts-router/docs/notes.md` |
 | AdGuard Home | ✅ Done | See `services/adguard/docs/adguard-notes.md` |
-| Vaultwarden | ⬜ Not started | |
+| Vaultwarden | ✅ Done | LXC created via Terraform, see `services/vault/docs/vault-notes.md`; Vaultwarden install + HTTPS reverse proxy still manual |
 | Immich | ⬜ Not started | |
 | Ollama + Open WebUI | ⬜ Not started | |
 | Dashboard (Homepage/Homarr) + Uptime Kuma | ⬜ Not started | |
@@ -36,12 +36,17 @@ Each service is its own Terraform module, called from the root `main.tf`. There'
     │   ├── lxc.conf.snippet     (host-side config lines for TUN/TAP passthrough)
     │   └── docs/
     │       └── notes.md
-    └── adguard/
+    ├── adguard/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   ├── AdGuardHome.example.yaml   (redacted template — see note below)
+    │   └── docs/
+    │       └── adguard-notes.md
+    └── vault/
         ├── main.tf
         ├── variables.tf
-        ├── AdGuardHome.example.yaml   (redacted template — see note below)
         └── docs/
-            └── adguard-notes.md
+            └── vault-notes.md
 ```
 
 Adding a new service means adding `services/<name>/{main.tf, variables.tf, docs/}` and a matching `module` block in the root `main.tf`.

@@ -32,7 +32,13 @@ module "adguard" {
   gw_ip                      = var.gw_ip
 }
 
-# vault - Vaultwarden password manager
+module "vault" {
+  source = "./services/vault"
+
+  vault_ip                = var.vault_ip
+  vault_lxc_root_password = var.vault_lxc_root_password
+  gw_ip                    = var.gw_ip
+}
 
 # dash - service informatrion dashboard
 
