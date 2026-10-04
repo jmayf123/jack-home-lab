@@ -7,7 +7,7 @@ Dedicated, minimal LXC whose only job is running Tailscale as a subnet router, s
 - **Hostname:** `ts-router`
 - **Template:** Debian 12 (lightweight)
 - **Resources:** 1 vCPU, 512MB RAM, 2–4GB disk
-- **Network:** static IP, e.g. `<ts-router-ip>/24` — replace with actual value used
+- **Network:** static IP on the LAN subnet (e.g. `<lan-subnet>.0/24`) — replace with actual value used
 - **Unprivileged:** yes
 - **TUN/TAP device support:** enabled (required — see `lxc.conf.snippet` in this folder for the manual config lines added on the host side)
 
@@ -37,7 +37,7 @@ Dedicated, minimal LXC whose only job is running Tailscale as a subnet router, s
 `/etc/hosts` inside a Proxmox-templated container has an auto-managed block:
 ```
 # --- BEGIN PVE ---
-<ts-router-ip> tailscale.lan tailscale
+<container-ip> tailscale.lan tailscale
 # --- END PVE ---
 ```
 Don't hand-edit this block — Proxmox regenerates it from the container's **Hostname** setting. To rename, either:
@@ -46,7 +46,7 @@ Don't hand-edit this block — Proxmox regenerates it from the container's **Hos
 
 ## Verification
 - `tailscale status` on the router shows it connected with the subnet route listed.
-- From a device on the tailnet: `ping <ts-router-ip>` (router itself) and `ping <gateway-ip>` (LAN gateway) both succeed, confirming routing works end-to-end, not just to the router itself.
+- From a device on the tailnet: `ping <container-ip>` (router itself) and `ping <gateway-ip>` (LAN gateway) both succeed, confirming routing works end-to-end, not just to the router itself.
 - Tailscale admin console shows this machine tagged as **Subnet router** with the route approved.
 
 ## Known tradeoff
