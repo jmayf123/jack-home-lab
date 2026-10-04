@@ -12,7 +12,7 @@ Run from the Proxmox host shell (**Node → Shell**), Advanced setup mode (neede
 
 ## Container settings used
 - **Hostname:** `adguard`
-- **Network:** Static IPv4, e.g. `192.168.1.11/24`
+- **Network:** Static IPv4 on the LAN subnet (e.g. `<lan-subnet>.0/24`)
 - **IPv6:** Disabled ("None") — not using IPv6 on the LAN, no need to add complexity
 - **TUN/TAP device support:** Disabled — only needed for containers that create their own VPN tunnels (e.g. the Tailscale router), not for a plain DNS server
 - **CPU/RAM/disk:** left at script defaults — AdGuard is very light
