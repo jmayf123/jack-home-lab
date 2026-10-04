@@ -33,10 +33,6 @@ resource "proxmox_lxc" "vault" {
     gw     = var.gw_ip
   }
 
-  features {
-    keyctl = true
-  }
-
   lifecycle {
     ignore_changes = [
       description,
