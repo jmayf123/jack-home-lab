@@ -14,15 +14,18 @@ variable "gw_ip" {
   type      = string
   sensitive = true
 }
+
+########## SERVICE-SPECIFIC (passed through to modules) ##########
+
 variable "ts_router_ip" {
   type      = string
   sensitive = true
 }
-variable "adguard_ip" {
+variable "ts_router_lxc_root_password" {
   type      = string
   sensitive = true
 }
-variable "ts_router_lxc_root_password" {
+variable "adguard_ip" {
   type      = string
   sensitive = true
 }
