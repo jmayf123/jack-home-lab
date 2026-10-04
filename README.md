@@ -19,7 +19,7 @@ Proxmox VE homelab running on a repurposed gaming PC.
 
 ## Repo structure
 
-Each service is its own Terraform module, called from the root `main.tf`. There's a single shared state and provider config at the root; each `services/<name>/` directory owns its resource definition, its own variables, and a `docs/` folder with only the docs relevant to that service.
+Each service is its own Terraform module, called from the root `main.tf`. There's a single shared state and provider config at the root; each `services/<name>/` directory owns its resource definition, its own variables, a `scripts/` folder with the setup script(s) to run inside the container once Terraform brings it up, and a `docs/` folder with a short summary of the service plus the steps to take after the container exists.
 
 ```
 .
@@ -34,20 +34,26 @@ Each service is its own Terraform module, called from the root `main.tf`. There'
     │   ├── main.tf              (proxmox_lxc resource + required_providers)
     │   ├── variables.tf
     │   ├── lxc.conf.snippet     (host-side config lines for TUN/TAP passthrough)
+    │   ├── scripts/
+    │   │   └── setup.sh
     │   └── docs/
     │       └── notes.md
     ├── adguard/
     │   ├── main.tf
     │   ├── variables.tf
     │   ├── AdGuardHome.example.yaml   (redacted template — see note below)
+    │   ├── scripts/
+    │   │   └── setup.sh
     │   └── docs/
     │       └── adguard-notes.md
     └── vault/
         ├── main.tf
         ├── variables.tf
+        ├── scripts/
+        │   └── setup.sh
         └── docs/
             └── vault-notes.md
 ```
 
-Adding a new service means adding `services/<name>/{main.tf, variables.tf, docs/}` and a matching `module` block in the root `main.tf`.
+Adding a new service means adding `services/<name>/{main.tf, variables.tf, scripts/, docs/}` and a matching `module` block in the root `main.tf`.
 
