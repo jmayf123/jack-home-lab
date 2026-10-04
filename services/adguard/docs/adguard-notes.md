@@ -4,7 +4,7 @@
 Network-wide DNS filtering (ads/trackers) and a local DNS server.
 
 ## After `terraform apply`
-1. `pct enter 101`, then run `scripts/setup.sh` — installs AdGuard Home as a systemd service. If running it straight from GitHub, use the **raw** URL, not a `blob` URL:
+1. `pct enter 101`, then run `scripts/setup.sh` — installs AdGuard Home as a systemd service.
    ```
    bash <(curl -sL https://raw.githubusercontent.com/jmayf123/jack-home-lab/main/services/adguard/scripts/setup.sh)
    ```

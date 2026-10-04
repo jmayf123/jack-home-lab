@@ -5,7 +5,7 @@ Self-hosted, Bitwarden-compatible password manager server.
 
 ## After `terraform apply`
 1. Bump container resources for the build — compiling needs more than the normal 512MB: `pct set 102 -memory 2048 -cores 2` from the Proxmox host.
-2. `pct enter 102`, then run `scripts/setup.sh` — builds Vaultwarden from source, installs it as a systemd service on port 8000, and prints a generated `ADMIN_TOKEN`. If running it straight from GitHub, use the **raw** URL, not a `blob` URL (a `blob` URL serves the HTML page, not the script):
+2. `pct enter 102`, then run `scripts/setup.sh` — builds Vaultwarden from source, installs it as a systemd service on port 8000, and prints a generated `ADMIN_TOKEN`.
    ```
    bash <(curl -sL https://raw.githubusercontent.com/jmayf123/jack-home-lab/main/services/vault/scripts/setup.sh)
    ```
