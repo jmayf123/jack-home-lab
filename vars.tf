@@ -1,19 +1,32 @@
-#Set your public SSH key here
-variable "ssh_key" {
-  default = "your_public_ssh_key_here"
-}
-#Provide the url of the host you would like the API to communicate on.
-#It is safe to default to setting this as the URL for what you used
-#as your `proxmox_host`, although they can be different
 variable "pm_api_url" {
-    default = "https://192.168.1.247:8006/api2/json"
+  type      = string
+  sensitive = true
 }
-#Blank var for use by secrets.tfvars
 variable "pm_api_token_id" {
+  type      = string
+  sensitive = true
 }
 variable "pm_api_token_secret" {
+  type      = string
+  sensitive = true
 }
-variable "ts_router_lxc_root_password" { 
+variable "gw_ip" {
+  type      = string
+  sensitive = true
+}
+variable "ts_router_ip" {
+  type      = string
+  sensitive = true
+}
+variable "adguard_ip" {
+  type      = string
+  sensitive = true
+}
+variable "ts_router_lxc_root_password" {
+  type      = string
+  sensitive = true
 }
 variable "adguard_lxc_root_password" {
+  type      = string
+  sensitive = true
 }

@@ -8,10 +8,10 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_api_url      = var.pm_api_url         # e.g. https://192.168.1.5:8006/api2/json
-  pm_user         = var.pm_user            # e.g. terraform@pve
-  pm_password     = var.pm_password
-  pm_tls_insecure = true                   # only if using a self-signed cert
+  pm_api_url          = var.pm_api_url
+  pm_api_token_id     = var.pm_api_token_id
+  pm_api_token_secret = var.pm_api_token_secret
+  pm_tls_insecure     = true
 }
 
 ########## SERVICES ##########  
@@ -20,6 +20,7 @@ provider "proxmox" {
 resource "proxmox_lxc" "ts-router" {
   target_node  = "pve"      # your Proxmox node name
   hostname     = "ts-router"
+  vmid         = 100
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst" 
   unprivileged = true
   password     = var.ts_router_lxc_root_password
@@ -36,8 +37,8 @@ resource "proxmox_lxc" "ts-router" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.10/24"   
-    gw     = "192.168.1.1"       
+    ip     =  var.ts_router_ip  
+    gw     = var.gw_ip       
   }
 
   # TUN/TAP support — this maps to the "Enable TUN/TAP" checkbox
@@ -51,6 +52,7 @@ resource "proxmox_lxc" "ts-router" {
 resource "proxmox_lxc" "adguard" {
   target_node  = "pve"
   hostname     = "adguard"
+  vmid         = 101
   ostemplate   = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
   unprivileged = true
   password     = var.adguard_lxc_root_password
@@ -67,11 +69,13 @@ resource "proxmox_lxc" "adguard" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.11/24"  
-    gw     = "192.168.1.1"
+    ip     = var.adguard_ip 
+    gw     = var.gw_ip
   }
 
-  keyctl = true
+  features {
+    keyctl = true
+  }
 }
 # vault - Vaultwarden password manager
 
