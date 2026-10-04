@@ -23,7 +23,7 @@ resource "proxmox_lxc" "vault" {
 
   rootfs {
     storage = "local"
-    size    = "4G"
+    size    = "10G"
   }
 
   network {
