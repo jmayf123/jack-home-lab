@@ -33,3 +33,11 @@ variable "adguard_lxc_root_password" {
   type      = string
   sensitive = true
 }
+variable "vault_ip" {
+  type      = string
+  sensitive = true
+}
+variable "vault_lxc_root_password" {
+  type      = string
+  sensitive = true
+}
