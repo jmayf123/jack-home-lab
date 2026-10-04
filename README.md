@@ -10,8 +10,8 @@ Proxmox VE homelab running on a repurposed gaming PC.
 
 | Service | Status | Notes |
 |---|---|---|
-| Tailscale subnet router | ✅ Done | Dedicated LXC, see `configs/tailscale-router/` |
-| AdGuard Home | ✅ Done | See `docs/adguard-notes.md` |
+| Tailscale subnet router | ✅ Done | Dedicated LXC, see `services/ts-router/docs/notes.md` |
+| AdGuard Home | ✅ Done | See `services/adguard/docs/adguard-notes.md` |
 | Vaultwarden | ⬜ Not started | |
 | Immich | ⬜ Not started | |
 | Ollama + Open WebUI | ⬜ Not started | |
@@ -19,18 +19,30 @@ Proxmox VE homelab running on a repurposed gaming PC.
 
 ## Repo structure
 
+Each service is its own Terraform module, called from the root `main.tf`. There's a single shared state and provider config at the root; each `services/<name>/` directory owns its resource definition, its own variables, and a `docs/` folder with only the docs relevant to that service.
+
 ```
 .
 ├── README.md
-├── docs/                  — planning docs and per-service notes
-│   ├── services-plan.md        (AdGuard, Vaultwarden, Immich, Ollama, Dashboard rollout plan)
-│   └── adguard-notes.md        (what was actually done + gotchas hit)
-├── services/               — actual config snippets from working containers
-│   ├── adguard/
-│   │   └── AdGuardHome.example.yaml   (redacted template — see note below)
-│   └── ts-router/
-│       ├── lxc.conf.snippet           (host-side config lines for TUN/TAP passthrough)
-│       └── notes.md
-└── .gitignore
+├── main.tf                 — provider config + module blocks for each service
+├── vars.tf                 — shared vars (API creds, gateway IP) + per-service vars passed into modules
+├── secrets.tfvars          — actual values for the above (not committed)
+├── docs/
+│   └── services-plan.md        (AdGuard, Vaultwarden, Immich, Ollama, Dashboard rollout plan)
+└── services/                — one directory per service, each a Terraform module
+    ├── ts-router/
+    │   ├── main.tf              (proxmox_lxc resource + required_providers)
+    │   ├── variables.tf
+    │   ├── lxc.conf.snippet     (host-side config lines for TUN/TAP passthrough)
+    │   └── docs/
+    │       └── notes.md
+    └── adguard/
+        ├── main.tf
+        ├── variables.tf
+        ├── AdGuardHome.example.yaml   (redacted template — see note below)
+        └── docs/
+            └── adguard-notes.md
 ```
+
+Adding a new service means adding `services/<name>/{main.tf, variables.tf, docs/}` and a matching `module` block in the root `main.tf`.
 
