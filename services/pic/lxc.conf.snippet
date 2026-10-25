@@ -1,0 +1,10 @@
+# Add this line to the container's config on the PROXMOX HOST (not inside
+# the container itself): /etc/pve/lxc/<vmid>.conf
+#
+# Bridges the host's CIFS-mounted photo share into the container at
+# /mnt/photos. Mount the share on the HOST first (see docs/pic-notes.md) —
+# this just bind-mounts that host path into the unprivileged container.
+#
+# Restart the container after adding this line.
+
+lxc.mount.entry: /mnt/pve/immich-photos mnt/photos none bind,create=dir 0 0

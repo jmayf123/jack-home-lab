@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run inside the pic container after `terraform apply`, after applying
+# lxc.conf.snippet on the host and restarting the container.
+#
+# Installs Docker + Compose, pulls Immich's official docker-compose.yml/.env,
+# points UPLOAD_LOCATION at the CIFS share bind-mounted at /mnt/photos, and
+# brings the stack up.
+
+if [ ! -d /mnt/photos ] || ! mountpoint -q /mnt/photos; then
+  echo "ERROR: /mnt/photos is not mounted. Apply lxc.conf.snippet on the" >&2
+  echo "Proxmox host and restart this container before running this script." >&2
+  exit 1
+fi
+
+apt update
+apt install -y ca-certificates curl gnupg
+
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+  >/etc/apt/sources.list.d/docker.list
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+systemctl enable --now docker
+
+mkdir -p /opt/immich
+cd /opt/immich
+curl -fsSL -o docker-compose.yml https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
+curl -fsSL -o .env https://github.com/immich-app/immich/releases/latest/download/example.env
+
+DB_PASSWORD=$(openssl rand -base64 24)
+sed -i \
+  -e "s|^UPLOAD_LOCATION=.*|UPLOAD_LOCATION=/mnt/photos|" \
+  -e "s|^DB_DATA_LOCATION=.*|DB_DATA_LOCATION=./postgres|" \
+  -e "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|" \
+  .env
+
+docker compose up -d
+
+echo "Immich is starting. Web UI will be on port 2283 once containers are up:"
+echo "  docker compose -f /opt/immich/docker-compose.yml ps"
+echo "DB_PASSWORD (also saved in /opt/immich/.env): $DB_PASSWORD"
