@@ -16,10 +16,10 @@ resource "proxmox_lxc" "adguard" {
   unprivileged = true
   password     = var.adguard_lxc_root_password
 
-  cores     = 1
+  cores    = 1
   cpulimit = 0
-  memory    = 512
-  swap      = 512
+  memory   = 512
+  swap     = 512
 
   rootfs {
     storage = "local"

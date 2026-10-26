@@ -21,7 +21,7 @@ module "ts_router" {
 
   ts_router_ip                = var.ts_router_ip
   ts_router_lxc_root_password = var.ts_router_lxc_root_password
-  gw_ip                        = var.gw_ip
+  gw_ip                       = var.gw_ip
 }
 
 module "adguard" {
@@ -29,7 +29,7 @@ module "adguard" {
 
   adguard_ip                = var.adguard_ip
   adguard_lxc_root_password = var.adguard_lxc_root_password
-  gw_ip                      = var.gw_ip
+  gw_ip                     = var.gw_ip
 }
 
 module "vault" {
@@ -37,11 +37,17 @@ module "vault" {
 
   vault_ip                = var.vault_ip
   vault_lxc_root_password = var.vault_lxc_root_password
-  gw_ip                    = var.gw_ip
+  gw_ip                   = var.gw_ip
+}
+
+module "pic" {
+  source = "./services/pic"
+
+  pic_ip                = var.pic_ip
+  pic_lxc_root_password = var.pic_lxc_root_password
+  gw_ip                 = var.gw_ip
 }
 
 # dash - service informatrion dashboard
 
 # llm - Ollama with Open Web UI for local llm
-
-# pic - Immich cloud photos
