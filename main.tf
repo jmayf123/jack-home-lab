@@ -46,6 +46,22 @@ module "pic" {
   pic_ip                = var.pic_ip
   pic_lxc_root_password = var.pic_lxc_root_password
   gw_ip                 = var.gw_ip
+
+  pic_vm_id          = var.pic_vm_id
+  pic_vm_ip          = var.pic_vm_ip
+  pic_vm_user        = var.pic_vm_user
+  pic_ssh_public_key = var.pic_ssh_public_key
+  pic_vm_template    = var.pic_vm_template
+  pic_vm_storage     = var.pic_vm_storage
+  pic_vm_cores       = var.pic_vm_cores
+  pic_vm_memory      = var.pic_vm_memory
+  pic_vm_disk_gb     = var.pic_vm_disk_gb
+  nas_ip             = var.nas_ip
+}
+
+output "pic_immich_url" {
+  value     = module.pic.pic_immich_url
+  sensitive = true
 }
 
 # dash - service informatrion dashboard

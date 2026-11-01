@@ -13,7 +13,7 @@ Proxmox VE homelab running on a repurposed gaming PC.
 | Tailscale subnet router | ✅ Done | Dedicated LXC, see `services/ts-router/docs/notes.md` |
 | AdGuard Home | ✅ Done | See `services/adguard/docs/adguard-notes.md` |
 | Vaultwarden | ✅ Done | LXC created via Terraform, see `services/vault/docs/vault-notes.md`; Vaultwarden install + HTTPS reverse proxy still manual |
-| Immich | 🚧 In progress | LXC + Terraform created, see `services/pic/docs/pic-notes.md`; CIFS mount + Docker Compose setup still manual |
+| Immich | 🚧 In progress | VM + Terraform, see `services/pic/README.md`; template, `setup.sh` and Immich onboarding still manual (old LXC design in `services/pic/legacy-lxc/`) |
 | Ollama + Open WebUI | ⬜ Not started | |
 | Dashboard (Homepage/Homarr) + Uptime Kuma | ⬜ Not started | |
 
@@ -56,11 +56,12 @@ Each service is its own Terraform module, called from the root `main.tf`. There'
     └── pic/
         ├── main.tf
         ├── variables.tf
-        ├── lxc.conf.snippet     (host-side config line to bridge the CIFS share into the container)
-        ├── scripts/
-        │   └── setup.sh
-        └── docs/
-            └── pic-notes.md
+        ├── outputs.tf
+        ├── README.md            (VM runbook)
+        ├── legacy-lxc/          (obsolete LXC design)
+        └── scripts/
+            ├── create-template.sh   (run once on the Proxmox host)
+            └── setup.sh             (run inside the VM)
 ```
 
 Adding a new service means adding `services/<name>/{main.tf, variables.tf, scripts/, docs/}` and a matching `module` block in the root `main.tf`.

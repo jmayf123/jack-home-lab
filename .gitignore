@@ -265,3 +265,6 @@ terraform.rc
 # planout
 #
 .claude/
+
+# SMB credentials
+.smbcredentials*
