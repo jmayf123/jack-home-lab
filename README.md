@@ -13,7 +13,7 @@ Proxmox VE homelab running on a repurposed gaming PC.
 | Tailscale subnet router | ✅ Done | Dedicated LXC, see `services/ts-router/docs/notes.md` |
 | AdGuard Home | ✅ Done | See `services/adguard/docs/adguard-notes.md` |
 | Vaultwarden | ✅ Done | LXC created via Terraform, see `services/vault/docs/vault-notes.md`; Vaultwarden install + HTTPS reverse proxy still manual |
-| Immich | 🚧 In progress | VM + Terraform, see `services/pic/README.md`; template, `setup.sh` and Immich onboarding still manual (old LXC design in `services/pic/legacy-lxc/`) |
+| Immich | 🚧 In progress | VM + Terraform, see `services/pic/README.md`; template, `setup.sh` and Immich onboarding still manual |
 | Ollama + Open WebUI | ⬜ Not started | |
 | Dashboard (Homepage/Homarr) + Uptime Kuma | ⬜ Not started | |
 
@@ -58,7 +58,6 @@ Each service is its own Terraform module, called from the root `main.tf`. There'
         ├── variables.tf
         ├── outputs.tf
         ├── README.md            (VM runbook)
-        ├── legacy-lxc/          (obsolete LXC design)
         └── scripts/
             ├── create-template.sh   (run once on the Proxmox host)
             └── setup.sh             (run inside the VM)

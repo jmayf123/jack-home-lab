@@ -43,9 +43,7 @@ module "vault" {
 module "pic" {
   source = "./services/pic"
 
-  pic_ip                = var.pic_ip
-  pic_lxc_root_password = var.pic_lxc_root_password
-  gw_ip                 = var.gw_ip
+  gw_ip = var.gw_ip
 
   pic_vm_id          = var.pic_vm_id
   pic_vm_ip          = var.pic_vm_ip

@@ -1,11 +1,3 @@
-variable "pic_ip" {
-  type      = string
-  sensitive = true
-}
-variable "pic_lxc_root_password" {
-  type      = string
-  sensitive = true
-}
 variable "gw_ip" {
   type      = string
   sensitive = true
@@ -15,8 +7,8 @@ variable "gw_ip" {
 
 variable "pic_vm_id" {
   type        = number
-  description = "VMID for the Immich VM. Container 104 is the old LXC; VMs and CTs share the ID space."
-  default     = 105
+  description = "VMID for the Immich VM."
+  default     = 104
 }
 variable "pic_vm_ip" {
   type        = string

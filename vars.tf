@@ -41,18 +41,10 @@ variable "vault_lxc_root_password" {
   type      = string
   sensitive = true
 }
-variable "pic_ip" {
-  type      = string
-  sensitive = true
-}
-variable "pic_lxc_root_password" {
-  type      = string
-  sensitive = true
-}
 
 variable "pic_vm_id" {
   type    = number
-  default = 105
+  default = 104
 }
 variable "pic_vm_ip" {
   type      = string

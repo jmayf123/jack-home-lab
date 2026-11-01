@@ -1,6 +1,6 @@
 # Immich (pic) - VM runbook
 
-Immich runs in a Debian 12 **VM** (VMID `105` by default; `104` is the retired LXC). The NAS share is mounted **inside the VM** - nothing is installed or mounted on the Proxmox host.
+Immich runs in a Debian 12 **VM** (VMID `104`). The NAS share is mounted **inside the VM** - nothing is installed or mounted on the Proxmox host.
 
 | Path in VM | Purpose |
 |---|---|
@@ -14,7 +14,7 @@ ML runs on CPU (no GPU passthrough).
 ## Setup
 
 1. **One-time template** (Telmate provider can't download images or upload snippets): on the Proxmox host run `scripts/create-template.sh` (needs `libguestfs-tools`). Creates template `debian-12-cloudinit` (ID 9000) with qemu-guest-agent baked in.
-2. Add the new vars from `terraform.tfvars.example` to `secrets.tfvars`, then `terraform plan -var-file=secrets.tfvars` and `terraform apply` (review: the old LXC 104 resource is still in the code - see "Cleanup").
+2. Add the new vars from `terraform.tfvars.example` to `secrets.tfvars`, then `terraform plan -var-file=secrets.tfvars` and `terraform apply`.
 3. Copy the script over and run it (prompts for SMB user/password; they are stored only in `/root/.smbcredentials-immich` inside the VM):
    `terraform output -raw pic_setup_command | bash` - or manually: `scp scripts/setup.sh <user>@<vm-ip>:` then `ssh -t <user>@<vm-ip> 'sudo NAS_IP=<nas-ip> bash setup.sh'`
 4. Open `http://<vm-ip>:2283` and create the admin account.
@@ -34,7 +34,3 @@ ML runs on CPU (no GPU passthrough).
 - [ ] Immich's nightly DB dumps land in `/mnt/nas/immich/backups` - this is the real DB backup.
 - [ ] Second copy / offsite of `nas/immich` and `nas/Photos`.
 - [ ] `DB_PASSWORD` (in `/opt/immich/.env`) stored in a password manager.
-
-## Cleanup (your call)
-
-`legacy-lxc/` holds the obsolete LXC design (host CIFS mount + `lxc.conf.snippet`). The `proxmox_lxc.pic` resource in `main.tf` is kept so nothing is destroyed, but it isn't in state yet - `terraform apply` would **create** LXC 104. Remove that resource (and `pic_ip`/`pic_lxc_root_password`) once you've decided.
