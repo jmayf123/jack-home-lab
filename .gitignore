@@ -268,3 +268,6 @@ terraform.rc
 
 # SMB credentials
 .smbcredentials*
+
+# Local tfvars example
+terraform.tfvars.example
