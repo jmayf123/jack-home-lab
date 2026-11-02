@@ -265,3 +265,9 @@ terraform.rc
 # planout
 #
 .claude/
+
+# SMB credentials
+.smbcredentials*
+
+# Local tfvars example
+terraform.tfvars.example

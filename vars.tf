@@ -41,3 +41,43 @@ variable "vault_lxc_root_password" {
   type      = string
   sensitive = true
 }
+
+variable "pic_vm_id" {
+  type    = number
+  default = 104
+}
+variable "pic_vm_ip" {
+  type      = string
+  sensitive = true
+}
+variable "pic_vm_user" {
+  type    = string
+  default = "jack"
+}
+variable "pic_ssh_public_key" {
+  type = string
+}
+variable "pic_vm_template" {
+  type    = string
+  default = "debian-12-cloudinit"
+}
+variable "pic_vm_storage" {
+  type    = string
+  default = "local-lvm"
+}
+variable "pic_vm_cores" {
+  type    = number
+  default = 4
+}
+variable "pic_vm_memory" {
+  type    = number
+  default = 8192
+}
+variable "pic_vm_disk_gb" {
+  type    = number
+  default = 40
+}
+variable "nas_ip" {
+  type      = string
+  sensitive = true
+}
