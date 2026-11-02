@@ -11,7 +11,7 @@ set -euo pipefail
 
 TEMPLATE_ID="${TEMPLATE_ID:-9000}"
 TEMPLATE_NAME="${TEMPLATE_NAME:-debian-12-cloudinit}"
-STORAGE="${STORAGE:-local-lvm}"
+STORAGE="${STORAGE:-local}"
 BRIDGE="${BRIDGE:-vmbr0}"
 IMG=/var/lib/vz/template/iso/debian-12-genericcloud-amd64.qcow2
 
