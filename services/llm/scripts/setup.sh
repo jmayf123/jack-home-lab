@@ -24,15 +24,15 @@ for dev in /dev/kfd /dev/dri/renderD128; do
 done
 
 apt update
-apt install -y curl ca-certificates tar
+apt install -y curl ca-certificates tar zstd
 
 ########## Ollama ##########
 
 # Manual install (https://docs.ollama.com/linux) rather than install.sh, so the
 # ROCm bundle is always installed instead of depending on lspci GPU detection,
-# which is unreliable inside an LXC.
-curl -fsSL https://ollama.com/download/ollama-linux-amd64.tgz | tar -C /usr -xzf -
-curl -fsSL https://ollama.com/download/ollama-linux-amd64-rocm.tgz | tar -C /usr -xzf -
+# which is unreliable inside an LXC. Archives are .tar.zst (Ollama dropped .tgz).
+curl -fsSL https://ollama.com/download/ollama-linux-amd64.tar.zst | zstd -d | tar -C /usr -xf -
+curl -fsSL https://ollama.com/download/ollama-linux-amd64-rocm.tar.zst | zstd -d | tar -C /usr -xf -
 
 getent group render >/dev/null || groupadd --system render
 getent group video  >/dev/null || groupadd --system video
