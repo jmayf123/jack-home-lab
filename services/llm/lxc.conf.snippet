@@ -1,0 +1,22 @@
+# Add these lines to the container's config on the PROXMOX HOST (not inside
+# the container itself): /etc/pve/lxc/105.conf
+#
+# Passes the AMD GPU's render node and the ROCm compute device (/dev/kfd) into
+# the unprivileged container so Ollama can run inference on the 6700 XT.
+# Requires Proxmox VE 8.2+ (native "devN" device passthrough).
+#
+# mode=0666 sidesteps unprivileged uid/gid mapping so the `ollama` service
+# user inside the container can open the nodes. The stricter alternative is
+# gid=<render group gid inside the container> (run `getent group render` in
+# the container after setup.sh has created the group).
+#
+# Equivalent one-liner instead of editing the file:
+#   pct set 105 --dev0 /dev/dri/renderD128,mode=0666 --dev1 /dev/kfd,mode=0666
+#
+# Do NOT also add manual lxc.mount.entry lines for the same devices; Proxmox
+# refuses to start the container if a devN path is already bind-mounted.
+#
+# Restart the container after adding these lines: pct restart 105
+
+dev0: /dev/dri/renderD128,mode=0666
+dev1: /dev/kfd,mode=0666
