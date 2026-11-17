@@ -77,8 +77,13 @@ mkdir -p /opt/open-webui/data
 chown -R open-webui:open-webui /opt/open-webui
 
 # Run as the service user so the venv and uv's python cache are owned by it.
-runuser -u open-webui -- /usr/local/bin/uv venv --python 3.11 /opt/open-webui/venv
-runuser -u open-webui -- /usr/local/bin/uv pip install --python /opt/open-webui/venv/bin/python open-webui
+# runuser keeps root's cwd and HOME, which makes uv look for config/cache under
+# /root (permission denied), so cd and set HOME to the service user's home.
+as_webui() {
+  (cd /opt/open-webui && runuser -u open-webui -- env HOME=/opt/open-webui "$@")
+}
+as_webui /usr/local/bin/uv venv --allow-existing --python 3.11 /opt/open-webui/venv
+as_webui /usr/local/bin/uv pip install --python /opt/open-webui/venv/bin/python open-webui
 
 cat <<'EOF' >/opt/open-webui/.env
 DATA_DIR=/opt/open-webui/data
