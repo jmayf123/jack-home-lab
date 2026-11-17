@@ -14,7 +14,7 @@ Proxmox VE homelab running on a repurposed gaming PC.
 | AdGuard Home | ✅ Done | See `services/adguard/docs/adguard-notes.md` |
 | Vaultwarden | ✅ Done | LXC created via Terraform, see `services/vault/docs/vault-notes.md`; Vaultwarden install + HTTPS reverse proxy still manual |
 | Immich | ⬜ Not started | |
-| Ollama + Open WebUI | ⬜ Not started | |
+| Ollama + Open WebUI | 🟡 In progress | LXC via Terraform, see `services/llm/docs/llm-notes.md`; GPU passthrough + install are post-apply steps |
 | Dashboard (Homepage/Homarr) + Uptime Kuma | ⬜ Not started | |
 
 ## Repo structure
@@ -46,13 +46,21 @@ Each service is its own Terraform module, called from the root `main.tf`. There'
     │   │   └── setup.sh
     │   └── docs/
     │       └── adguard-notes.md
-    └── vault/
+    ├── vault/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   ├── scripts/
+    │   │   └── setup.sh
+    │   └── docs/
+    │       └── vault-notes.md
+    └── llm/
         ├── main.tf
         ├── variables.tf
+        ├── lxc.conf.snippet     (host-side GPU device passthrough: renderD128 + kfd)
         ├── scripts/
         │   └── setup.sh
         └── docs/
-            └── vault-notes.md
+            └── llm-notes.md
 ```
 
 Adding a new service means adding `services/<name>/{main.tf, variables.tf, scripts/, docs/}` and a matching `module` block in the root `main.tf`.

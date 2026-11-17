@@ -40,8 +40,14 @@ module "vault" {
   gw_ip                    = var.gw_ip
 }
 
-# dash - service informatrion dashboard
+module "llm" {
+  source = "./services/llm"
 
-# llm - Ollama with Open Web UI for local llm
+  llm_ip                = var.llm_ip
+  llm_lxc_root_password = var.llm_lxc_root_password
+  gw_ip                 = var.gw_ip
+}
+
+# dash - service informatrion dashboard
 
 # pic - Immich cloud photos

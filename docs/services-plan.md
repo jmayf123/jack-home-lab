@@ -75,14 +75,14 @@
 **Steps:**
 1. Create the LXC (helper script exists) or a small VM — for GPU acceleration, an **unprivileged LXC with GPU passthrough of `/dev/dri`** is the lightest option.
 2. Share the GPU into the container: in the LXC's config (`/etc/pve/lxc/<vmid>.conf`), add the render device passthrough lines (the helper script for Ollama with GPU support typically does this for you — accept that option if prompted).
-3. Install **ROCm** inside the container if the helper script didn't already, since the 6700 XT needs it for GPU-accelerated inference. Check Ollama's docs for the current supported ROCm version, as this changes across releases.
+3. No separate **ROCm** install is needed: Ollama's official Linux tarballs bundle the ROCm runtime libraries, so only the host's `amdgpu` driver matters. The 6700 XT (gfx1031) isn't officially supported by ROCm, so set `HSA_OVERRIDE_GFX_VERSION=10.3.0` in Ollama's service environment or it falls back to CPU.
 4. Install Ollama, then pull a model to test:
    ```
    ollama pull llama3.1:8b
    ollama run llama3.1:8b
    ```
 5. Install **Open WebUI** (separate container or Docker on the same one) for a ChatGPT-style chat interface instead of the command line.
-6. Confirm GPU usage during inference with `rocm-smi` or `radeontop` — if it's not being used, the model silently falls back to CPU, which is much slower but still works.
+6. Confirm GPU usage during inference with `ollama ps` (should say `100% GPU`) or `radeontop` on the host — `rocm-smi` won't exist in the container without a full ROCm install. If it's not being used, the model silently falls back to CPU, which is much slower but still works.
 
 **Notes:**
 - With 12GB VRAM, models in the 7B-14B range run comfortably; larger quantized models (20B+) may also fit depending on quantization level.
